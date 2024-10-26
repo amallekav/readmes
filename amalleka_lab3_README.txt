@@ -72,7 +72,7 @@ This document should be named **x-amallekav_lab3_README.txt**.
 ### Video Demonstration:
 Record a short video demonstrating your hardware setup and the working solution. Briefly explain the connections and functionality before demonstrating the program.  
 **Video Link:**  
-[INSERT_YOUR_VIDEO_LINK_HERE]
+[https://youtu.be/TeALeh0svnA]
 
 ### References:
 - MicroPython Documentation on Timers, Sleep Modes, and Interrupts
