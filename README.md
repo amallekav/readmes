@@ -1,83 +1,80 @@
-# Lab 2 – LED Control using ADC, PWM, Timers, and Interrupts
+**Lab 3 – WiFi Connectivity, NTP Synchronization, and Sleep Modes**  
+**Course:** ECE 40862 – Software for Embedded Systems  
+**Fall 2024**  
+**Instructor:** Prof. Lu Su  
+**Due:** October 24, 2024, by 11:59 PM  
 
-### Course: ECE 40862 – Software for Embedded Systems  
-### Fall 2024  
-### Instructor: Prof. Lu Su  
-### Due: October 4, 2024, by 11:59 PM
-
----
-
-## Description:
-This lab implements an embedded system using the ESP32 Feather V2 board to control an external LED's blinking speed and brightness using a potentiometer and a push button. The following peripherals are used: 
-- **PWM** to control the LED’s blinking frequency and brightness (duty cycle).
-- **ADC** to read analog input from the potentiometer.
-- **RTC (Real-Time Clock)** to display the current time.
-- **Timers and Interrupts** to handle periodic tasks and button presses.
+### Description:
+This lab implements an embedded system using the ESP32 Feather V2 board to establish WiFi connectivity, synchronize with an NTP server, manage LED control via touch sensor inputs, and use sleep modes for power efficiency. The program includes functionalities such as time synchronization with an NTP server, periodic display of the current time, and the ability to wake up from deep sleep using external events.
 
 ### Functionality:
-1. **RTC Setup**: The program prompts the user to input the current date and time and sets the RTC.
-2. **Time Display**: The current date and time are printed every 30 seconds using a timer interrupt.
-3. **Potentiometer Control**:
-   - The potentiometer reads values every 100ms and adjusts the LED based on the mode.
-   - **Mode 1**: Controls the LED's **blinking frequency** (potentiometer adjusts how fast the LED blinks).
-   - **Mode 0**: Controls the LED’s **brightness** (potentiometer adjusts the intensity of the LED).
-4. **Button Press**:
-   - A press of the button toggles between controlling the LED’s frequency and duty cycle using a button interrupt with debouncing.
-   
----
+1. **WiFi Setup**:
+   - The ESP32 connects to a WiFi network using the provided SSID and password. 
+   - If the connection fails after 10 retries, the ESP32 will reset itself.
 
-## Hardware Setup:
-1. **LED**:
-   - **Anode (long leg)** connected to **GPIO 15** (PWM output).
-   - **Cathode (short leg)** connected to **GND** through a **220Ω resistor**.
+2. **NTP Time Synchronization**:
+   - The RTC (Real-Time Clock) is synchronized with an NTP server (`pool.ntp.org`), and the local time is adjusted by the specified timezone offset (in this case, UTC-4).
+
+3. **Timers and Interrupts**:
+   - **Timer 1**: Displays the current date and time every 15 seconds.
+   - **Timer 2**: Reads touch sensor input every 50 milliseconds, adjusting the color of a NeoPixel LED based on the input state.
+   - **Timer 3**: Puts the ESP32 into deep sleep after 30 seconds.
+
+4. **Wake-Up Handling**:
+   - The ESP32 wakes up from deep sleep either through a timer interrupt or via external input (EXT0 wake-up), triggered by the wake button.
+
+5. **Touch Input**:
+   - The touch sensor reads values every 50 milliseconds. If the input crosses a predefined threshold, the NeoPixel LED color changes to green. If not, the LED is turned off.
+
+### Hardware Setup:
+- **Red LED**:
+  - **Pin 13** – connected to an external red LED (used to indicate power and wake-up events).
   
-2. **Potentiometer**:
-   - **Middle pin (wiper)** connected to **GPIO 32 (ADC1)**.
-   - **One side pin** connected to **3.3V**.
-   - **Other side pin** connected to **GND**.
+- **NeoPixel LED**:
+  - **Pin 0** – connected to a NeoPixel LED (used to display color based on touch sensor input).
+  - **Pin 2 (Output Mode)** – controls power to the NeoPixel LED.
+  
+- **Touch Sensor**:
+  - **Pin 4** – connected to a touch sensor for input.
 
-3. **Button**:
-   - On-board button connected to **GPIO 38** (input) with a pull-up resistor.
+- **Wake Button**:
+  - **Pin 33** – connected to an external button, configured to wake up the ESP32 from deep sleep.
 
----
+- **WiFi Configuration**:
+  - **SSID**: ankitha
+  - **Password**: ankithapass
 
-## Software Design:
-### Key Components:
-- **RTC Initialization**: The user inputs the date and time, which is used to initialize the RTC.
-- **Timers**:
-  - A timer triggers every **30 seconds** to print the current date and time.
-  - A timer triggers every **100ms** to read the potentiometer.
-- **PWM Control**:
-  - In **Mode 1 (Frequency Control)**, the potentiometer adjusts the LED's blinking speed.
-  - In **Mode 0 (Duty Cycle Control)**, the potentiometer adjusts the LED's brightness.
-- **Button Handling**:
-  - The button toggles between controlling the frequency and duty cycle, and debouncing is implemented to avoid multiple registrations of a single press.
+### Software Design:
+- **WiFi Connection**: Connects to WiFi using `connect_wifi()`.
+- **Time Synchronization**: Synchronizes time via NTP using `sync_time()`.
+- **Display Time**: Prints the current date and time every 15 seconds with `display_datetime()`.
+- **Touch Sensor Calibration**: Calibrates touch input to set a threshold using `calibrate_touch()`.
+- **Touch Sensor Handling**: Reads touch input every 50 ms, changing the NeoPixel LED color accordingly.
+- **Sleep Mode**: Puts the device into deep sleep after 30 seconds using `go_to_sleep()`.
+- **Wake-Up Handling**: Detects if the wake-up is due to an external pin (button) or a timer.
 
 ### Code Structure:
-- `set_time()`: Initializes the RTC based on user input.
-- `display_time()`: Displays the current time every 30 seconds using a timer.
-- `read_potentiometer()`: Reads the potentiometer every 100ms and adjusts the LED’s frequency or duty cycle based on the mode.
-- `switch_control()`: Handles mode switching (frequency or duty cycle) when the button is pressed.
-- `debounce()` and `button_pressed()`: Implements debouncing for the button to avoid multiple triggers.
+- **main()**: Handles the overall flow, including WiFi connection, time synchronization, touch calibration, and setting up timers for periodic tasks.
+- **check_touch()**: Reads the touch sensor and adjusts the NeoPixel LED color based on the input value.
+- **calibrate_touch()**: Sets the threshold for touch detection.
+- **display_datetime()**: Displays the current time.
+- **go_to_sleep()**: Puts the ESP32 into deep sleep for 1 minute.
+- **connect_wifi()**: Connects to the WiFi network and retries if necessary.
+- **sync_time()**: Synchronizes the RTC with the NTP server.
 
----
+### Submission:
+**Code File:**  
+Upload your code as **x-amallekav_lab3.py**.
 
-## Submission:
-1. **Code File**: Upload your code as `username_lab2.py`.
-2. **README File**: This document should be named `username_lab2_README.txt`.
-3. **Video Demonstration**:
-   - Record a short video demonstrating your hardware setup and the working solution.
-   - Briefly explain the connections and functionality before demonstrating the program.
-   - Upload the video to YouTube or a similar platform and provide the link below.
+**README File:**  
+This document should be named **x-amallekav_lab3_README.txt**.
 
-### Video Link:
-[https://youtu.be/dfM6wAYJ_rQ]
+### Video Demonstration:
+Record a short video demonstrating your hardware setup and the working solution. Briefly explain the connections and functionality before demonstrating the program.  
+**Video Link:**  
+[INSERT_YOUR_VIDEO_LINK_HERE]
 
----
-
-## References:
-1. [MicroPython Callbacks & Interrupts Documentation](https://docs.micropython.org/en/latest/library/machine.html#machine-callbacks)
-2. [ESP32 Feather V2 Datasheet](https://www.espressif.com/sites/default/files/documentation/esp32-pico-mini-02_datasheet_en.pdf)
-3. [Adafruit ESP32 Feather V2 Online Manual](https://learn.adafruit.com/adafruit-esp32-feather-v2)
-
----
+### References:
+- MicroPython Documentation on Timers, Sleep Modes, and Interrupts
+- ESP32 Feather V2 Datasheet
+- NeoPixel LED Documentation
