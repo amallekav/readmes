@@ -48,42 +48,34 @@ The folder structure is as follows:
 
 ### Step-by-Step Guide
 
-1. **Upload the `DPR-master` Folder**:
-   - Upload the `DPR-master.zip` file to your environment (e.g., Google Colab or a local Jupyter environment).
-   - Extract the zip file by running this code in a cell (for Colab or Jupyter Notebook):
-     ```python
-     import zipfile
+1. **Connect to GPU**:
+   - Make sure your environment is connected to a GPU for optimal performance.
 
-     with zipfile.ZipFile('DPR-master.zip', 'r') as zip_ref:
-         zip_ref.extractall('DPR-master')
-     ```
-
-2. **Open the Notebook**:
-   - Open the `total_relighting.ipynb` notebook in Jupyter or Google Colab.
+2. **Upload the Compressed Folder**:
+   - Upload the compressed `DPR-master.zip` folder in the first cell of the notebook. It should be titled `DPR-master.zip`.
 
 3. **Run Each Cell in Sequence**:
    - Execute each cell in the notebook to complete setup and the relighting process. The main steps include:
      - **Import Libraries**: Loads necessary libraries.
      - **Load Model and Utilities**: Sets up the pre-trained model weights from `trained_model/` and utility functions from `utils/`.
      - **Load Input Image**: Loads the input portrait image from `data/`, preprocessed and prepared for relighting.
-     - **Relight the Portrait**: The model applies lighting transformations to the portrait using spherical harmonics, saving the results in the `result` folder.
+     - **Relight the Portrait**: The model applies lighting transformations to the portrait using spherical harmonics, saving the results in the `result_1024` folder.
 
 4. **Use the Interactive RGB Slider Tool**:
-   - This interactive tool is essential for refining the relighting output by allowing users to manually adjust lighting properties.
+   - This interactive tool is essential for refining the relighting output by allowing users to manually adjust lighting properties after the portraits are relight.
      - **Red Slider**: Adjusts red intensity, adding warmth or reducing it for cooler tones.
      - **Green Slider**: Controls vibrancy and color balance.
      - **Blue Slider**: Modifies cool tones, affecting shadow depth and contrast.
    - Each slider change updates the image instantly, allowing users to create the desired lighting effect through fine-tuning.
 
-5. **View and Save Results**:
-   - The final images will be shown in the jupyter notebook and also stored in the `result_1024` folder.
-   - You can view the relighted portraits in the notebook or download them for further use.
+5. **View Results**:
+   - The final images will be displayed in the Jupyter notebook and stored in the `result_1024` folder.
+   - You can view the relighted portraits directly in the notebook or download them for further use.
 
-**Notes**
-Input and Expected Outputs: The input images and anticipated outputs are from the "Deep Single Portrait Image Relighting" repository by Zhou et al. (2019). These expected results help validate the accuracy of the model's relighting performance.
-Directory Structure: Ensure the directory structure within DPR-master remains unchanged, as the paths in the notebook depend on this setup.
+### Notes
 
-
+- **Input and Expected Outputs**: The input images and anticipated outputs are sourced from the "Deep Single Portrait Image Relighting" repository by Zhou et al. (2019). These expected results help validate the accuracy of the model's relighting performance.
+- **Directory Structure**: Ensure the directory structure within `DPR-master` remains unchanged, as the paths in the notebook depend on this setup.
 
 
 
